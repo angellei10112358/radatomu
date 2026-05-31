@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dragon Quest - Text Adventure</title>
+<title>Emberfel: A Text Adventure</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#1a1a2e;min-height:100vh;display:flex;justify-content:center;align-items:center;font-family:'Georgia','Noto Serif SC','SimSun',serif;padding:20px}
@@ -84,7 +84,7 @@ body{padding:6px}
 </head>
 <body>
 <div id="game">
-<div id="header"><h1><span>⚔</span> Dragon Quest <span>🐉</span></h1><div class="sub">─ TEXT ADVENTURE ─</div></div>
+<div id="header"><h1><span>⚔</span> Emberfel <span>🐉</span></h1><div class="sub">─ A Text Adventure ─</div></div>
 <div id="stats">
 <div class="stat"><span class="label">Lv.</span><span class="value" id="s-level">1</span></div>
 <div class="stat"><span class="label">HP</span><span class="value" id="s-hp">30</span><span class="label">/</span><span class="value" id="s-maxhp">30</span>
@@ -107,47 +107,47 @@ const WEAPONS = {
   copper_sword: { name: 'Copper Sword', atk: 3, price: 50 },
   steel_sword: { name: 'Steel Sword', atk: 6 },
   iron_sword: { name: 'Iron Sword', atk: 5 },
-  flame_sword: { name: 'Flame Sword', atk: 8 },
-  dragon_killer: { name: 'Dragon Killer', atk: 10 },
+  cinderbrand: { name: 'Cinderbrand', atk: 8 },
+  wyrmbane: { name: 'Wyrmbane', atk: 10 },
 };
 const ARMORS = {
   cloth: { name: 'Clothes', def: 0 },
   iron_armor: { name: 'Iron Armor', def: 4, price: 100 },
   platinum_armor: { name: 'Plat Armor', def: 6 },
-  dragon_armor: { name: 'Dragon Mail', def: 8 },
+  scaleplate: { name: 'Scaleplate', def: 8 },
 };
 const ACCESSORIES = {
-  power_ring: { name: 'Power Ring', atk: 2, def: 0, hp: 0 },
-  guard_ring: { name: 'Guard Ring', atk: 0, def: 2, hp: 0 },
-  life_ring: { name: 'Life Ring', atk: 0, def: 0, hp: 15 },
+  power_ring: { name: 'Might Ring', atk: 2, def: 0, hp: 0 },
+  guard_ring: { name: 'Ward Ring', atk: 0, def: 2, hp: 0 },
+  life_ring: { name: 'Vital Ring', atk: 0, def: 0, hp: 15 },
 };
 const SHOP_ITEMS = {
   herb: { name: 'Herb', desc: 'Restore 15HP + cure poison', price: 10 },
-  super_herb: { name: 'Super Herb', desc: 'Restore 30HP + cure poison', price: 25 },
+  super_herb: { name: 'Healing Herb', desc: 'Restore 30HP + cure poison', price: 25 },
   antidote: { name: 'Antidote', desc: 'Cure poison', price: 8 },
   torch: { name: 'Torch', desc: 'Light the cave', price: 20 },
-  holy_water: { name: 'Holy Water', desc: 'Double ATK for one turn', price: 30 },
-  bomb: { name: 'Bomb', desc: 'Deal 20 fixed damage', price: 35 },
-  prayer_candle: { name: 'Prayer Candle', desc: 'Escape any battle', price: 50 },
+  holy_water: { name: 'Blessed Water', desc: 'Double ATK for one turn', price: 30 },
+  bomb: { name: 'Blast Pebble', desc: 'Deal 20 fixed damage', price: 35 },
+  prayer_candle: { name: 'Smoke Candle', desc: 'Escape any battle', price: 50 },
 };
 const ENEMIES = {
-  slime: { name: 'Slime', hp: 8, atk: 3, def: 1, exp: 3, gold: 3, desc: 'A blue blob of jelly bounces toward you.' },
+  slime: { name: 'Gloop', hp: 8, atk: 3, def: 1, exp: 3, gold: 3, desc: 'A wobbly mass of viscous fluid oozes toward you.' },
   mushroom: { name: 'Mushroom', hp: 12, atk: 4, def: 2, exp: 5, gold: 5, desc: 'A giant mushroom with an eerie smiling face.' },
-  goblin: { name: 'Goblin', hp: 18, atk: 7, def: 3, exp: 8, gold: 12, desc: 'A green imp with a short sword and a mean glare.' },
+  goblin: { name: 'Hobgoblin', hp: 18, atk: 7, def: 3, exp: 8, gold: 12, desc: 'A green brute with a short sword and a mean glare.' },
   bat: { name: 'Giant Bat', hp: 10, atk: 8, def: 2, exp: 7, gold: 8, desc: 'A basin-sized bat shrieks piercingly.' },
   forest_wolf: { name: 'Forest Wolf', hp: 22, atk: 10, def: 3, exp: 11, gold: 12, desc: 'A grey wolf snarls, green eyes gleaming.' },
   giant_bear: { name: 'Giant Bear', hp: 32, atk: 12, def: 5, exp: 16, gold: 20, desc: 'A massive brown bear rears up with a deafening roar.' },
   skeleton: { name: 'Skeleton', hp: 22, atk: 9, def: 4, exp: 12, gold: 18, desc: 'An undead warrior rises from the ground, red light glowing in its empty sockets.' },
   water_snake: { name: 'Water Snake', hp: 16, atk: 11, def: 3, exp: 11, gold: 12, desc: 'A giant serpent bursts from the water, venomous fangs glistening.', poisonChance: 0.3 },
   ghost: { name: 'Ghost', hp: 16, atk: 10, def: 3, exp: 14, gold: 15, desc: 'A translucent spirit exudes a bone-chilling cold.' },
-  wraith: { name: 'Wraith', hp: 22, atk: 13, def: 4, exp: 18, gold: 22, desc: 'A vengeful spirit bound by hatred moans in despair.', curseChance: 0.25 },
-  dark_knight: { name: 'Dark Knight', hp: 30, atk: 14, def: 6, exp: 22, gold: 28, desc: 'An undead knight in black armor silently raises his sword.' },
+  wraith: { name: 'Banshee', hp: 22, atk: 13, def: 4, exp: 18, gold: 22, desc: 'A wailing spirit bound by hatred shrieks in despair.', curseChance: 0.25 },
+  dark_knight: { name: 'Dusk Knight', hp: 30, atk: 14, def: 6, exp: 22, gold: 28, desc: 'A knight in twilight armor silently raises his blade.' },
   rock_golem: { name: 'Rock Golem', hp: 38, atk: 11, def: 9, exp: 20, gold: 30, desc: 'A giant construct of mountain stone moves slowly but has immense defense.' },
-  wyvern: { name: 'Wyvern', hp: 32, atk: 15, def: 5, exp: 26, gold: 36, desc: 'A winged dragon-beast screeches sharply.' },
+  wyvern: { name: 'Drake', hp: 32, atk: 15, def: 5, exp: 26, gold: 36, desc: 'A winged beast screeches sharply.' },
   bandit_chief: { name: 'Bandit Chief', hp: 35, atk: 12, def: 5, exp: 30, gold: 60, desc: 'The bandit leader wields a large blade, his face scarred and cruel.', boss: true },
   death_knight: { name: 'Death Knight', hp: 45, atk: 16, def: 7, exp: 45, gold: 100, desc: 'The ghost of an ancient knight wielding a massive greatsword, wreathed in black miasma.', boss: true },
-  wyvern_king: { name: 'Wyvern King', hp: 40, atk: 18, def: 5, exp: 55, gold: 120, desc: 'The wyvern king, three times the size of its kin, blots out the sun with its wings.', boss: true, wingGust: true },
-  ancient_dragon: { name: 'Ancient Dragon', hp: 75, atk: 24, def: 8, exp: 500, gold: 500, desc: 'The ancient dragon awakens from a thousand-year slumber—scales like iron, eyes like molten lava. The entire cavern trembles as it rises.', boss: true, fireBreath: true, curseChance: 0.3 },
+  storm_drake: { name: 'Storm Drake', hp: 40, atk: 18, def: 5, exp: 55, gold: 120, desc: 'The storm drake descends from the clouds, lightning crackling between its horns. Its roar shakes the mountain.', boss: true, wingGust: true },
+  elder_wyrm: { name: 'Elder Wyrm', hp: 75, atk: 24, def: 8, exp: 500, gold: 500, desc: 'The elder wyrm stirs from its millennial sleep—scales like forged iron, eyes like pools of magma. The mountain trembles as it rises.', boss: true, fireBreath: true, curseChance: 0.3 },
 };
 
 // ==================== STATE ====================
@@ -241,10 +241,10 @@ function enemyTurn() {
   const e = D.combat; const def = getDef();
   if (e.fireBreath && e.turn > 1 && e.turn % 3 === 0) {
     const dmg = Math.floor(e.atk * 1.5 - Math.floor(def / 2));
-    addLog('→ 🔥 Ancient Dragon breathes flame!', 'dragon');
+    addLog('→ 🔥 Elder Wyrm breathes flame!', 'dragon');
     damagePlayer(Math.max(1, dmg));
     if (!D.cursed && Math.random() < e.curseChance) {
-      D.cursed = true; addLog('→ Cursed by the dragon! ATK/DEF down!', 'combat');
+      D.cursed = true; addLog('→ Cursed! ATK/DEF down!', 'combat');
     }
     return;
   }
@@ -279,11 +279,11 @@ function combatAction(action) {
       else addLog('→ Herb restores 15HP', 'combat-heal');
       break;
     case 'item_super_herb':
-      if (!hasItem('super_herb')) { addLog('No Super Herb', 'info'); break; }
+      if (!hasItem('super_herb')) { addLog('No Healing Herb', 'info'); break; }
       removeItem('super_herb');
       D.hp = Math.min(D.hp + 30, getMaxHp());
-      if (D.poisoned) { D.poisoned = false; addLog('→ Super Herb restores 30HP and cures poison', 'combat-heal'); }
-      else addLog('→ Super Herb restores 30HP', 'combat-heal');
+      if (D.poisoned) { D.poisoned = false; addLog('→ Healing Herb restores 30HP and cures poison', 'combat-heal'); }
+      else addLog('→ Healing Herb restores 30HP', 'combat-heal');
       break;
     case 'item_antidote':
       if (!hasItem('antidote')) { addLog('No Antidote', 'info'); break; }
@@ -292,19 +292,19 @@ function combatAction(action) {
       else addLog('→ Not poisoned', 'info');
       break;
     case 'item_holy_water':
-      if (!hasItem('holy_water')) { addLog('No Holy Water', 'info'); break; }
+      if (!hasItem('holy_water')) { addLog('No Blessed Water', 'info'); break; }
       removeItem('holy_water'); D.atkBoost = true;
-      addLog('→ Holy Water! ATK doubled!', 'system');
+      addLog('→ Blessed Water! ATK doubled!', 'system');
       damageEnemy(getCurrentAtk() + lv + Math.floor(Math.random() * 4));
       D.atkBoost = false; break;
     case 'item_bomb':
-      if (!hasItem('bomb')) { addLog('No Bomb', 'info'); break; }
+      if (!hasItem('bomb')) { addLog('No Blast Pebble', 'info'); break; }
       removeItem('bomb'); D.combat.hp = Math.max(0, D.combat.hp - 20);
-      addLog('→ Bomb deals 20 fixed damage!', 'combat');
+      addLog('→ Blast Pebble deals 20 fixed damage!', 'combat');
       if (D.combat.hp <= 0) { victoryCombat(); return; } break;
     case 'item_prayer_candle':
-      if (!hasItem('prayer_candle')) { addLog('No Prayer Candle', 'info'); break; }
-      removeItem('prayer_candle'); addLog('→ You light the candle and escape!', 'system');
+      if (!hasItem('prayer_candle')) { addLog('No Smoke Candle', 'info'); break; }
+      removeItem('prayer_candle'); addLog('→ You light the Smoke Candle and escape!', 'system');
       endCombatCleanup(); return;
     case 'flee':
       if (e.boss) { addLog('→ The boss blocks your escape!', 'combat'); break; }
@@ -329,7 +329,7 @@ function endCombatCleanup() {
 }
 
 function victoryCombat() {
-  const e = D.combat; const isFinal = e.key === 'ancient_dragon';
+  const e = D.combat; const isFinal = e.key === 'elder_wyrm';
   D.gold += e.gold; addLog(`\n✨ ${e.name} defeated!`, 'combat-heal');
   addLog(`Gained ${e.exp} EXP and ${e.gold} Gold`, 'gold');
   addExp(e.exp);
@@ -345,29 +345,29 @@ function victoryCombat() {
       addItem('platinum_armor'); addLog('💡 Death Knight dropped Platinum Armor! DEF+6', 'system');
     }
   }
-  if (e.key === 'wyvern_king' && !D.flags.killed_wyvern_king) {
-    D.flags.killed_wyvern_king = true;
-    if (!hasItem('dragon_killer')) {
-      addItem('dragon_killer'); addLog('💡 Wyvern King dropped the legendary Dragon Killer! ATK+10', 'system');
+  if (e.key === 'storm_drake' && !D.flags.killed_storm_drake) {
+    D.flags.killed_storm_drake = true;
+    if (!hasItem('wyrmbane')) {
+      addItem('wyrmbane'); addLog('💡 Storm Drake dropped the legendary Wyrmbane! ATK+10', 'system');
     }
   }
   if (e.key === 'skeleton' && !D.flags.found_steel_sword && D.weapon !== 'steel_sword' && !hasItem('steel_sword')) {
     D.flags.found_steel_sword = true;
     addItem('steel_sword'); addLog('💡 Behind the Skeleton lies a Steel Sword! ATK+6', 'system');
   }
-  if (e.key === 'ghost' && !D.flags.found_dragon_armor && D.armor !== 'dragon_armor' && !hasItem('dragon_armor')) {
-    D.flags.found_dragon_armor = true;
-    addItem('dragon_armor'); addLog('💡 The Ghost left behind Dragon Mail! DEF+8', 'system');
+  if (e.key === 'ghost' && !D.flags.found_scaleplate && D.armor !== 'scaleplate' && !hasItem('scaleplate')) {
+    D.flags.found_scaleplate = true;
+    addItem('scaleplate'); addLog('💡 The Ghost left behind Scaleplate! DEF+8', 'system');
   }
   if (isFinal) {
-    D.flags.defeated_dragon = true;
+    D.flags.defeated_elder_wyrm = true;
     D.state = 'explore'; D.combat = null; D.atkBoost = false;
     if (D.blessing > 0) D.blessing--;
     addLog('\n══════════════════════', 'dragon');
-    addLog('🏆 Congratulations! You defeated the Ancient Dragon!', 'dragon');
+    addLog('🏆 Congratulations! You defeated the Elder Wyrm!', 'dragon');
     addLog('══════════════════════', 'dragon');
-    addLog('\nYou return to Radatome with the dragon\'s fang. The king himself crowns you.', 'narrator');
-    addLog('Peace is restored to the kingdom. Your name will be sung for ages—', 'narrator');
+    addLog('\nYou return to Stonehollow with the wyrm\'s fang. The king himself crowns you.', 'narrator');
+    addLog('Peace is restored to the land. Your name will be sung for ages—', 'narrator');
     addLog('🌟 The Legendary Hero 🌟', 'title');
     document.getElementById('actions').innerHTML = `<button onclick="resetGame()" class="primary">New Game</button>`;
     renderStats(); return;
@@ -397,16 +397,16 @@ function resetGame() {
 const LOC = {};
 
 LOC.town_square = {
-  name: 'Radatome Town Square',
+  name: 'Stonehollow Town Square',
   desc: () => {
     let s = 'Sunlight bathes the ancient cobblestones. The bell tower rings with a mellow chime.';
-    if (D.flags.defeated_dragon) s += '\n\nThe town is at peace. Smiles adorn every face.';
-    else if (!D.flags.talked_king) s += '\n\nThe castle banner flutters in the wind—the king seeks a hero to slay the dragon.';
-    else s += '\n\nThe castle banner still flies—the dragon threat remains.';
+    if (D.flags.defeated_elder_wyrm) s += '\n\nThe town is at peace. Smiles adorn every face.';
+    else if (!D.flags.talked_king) s += '\n\nThe castle banner flutters in the wind—the king seeks a hero to slay the wyrm.';
+    else s += '\n\nThe castle banner still flies—the wyrm threat remains.';
     return s;
   },
   actions: () => {
-    if (D.flags.defeated_dragon) return [{ text: '🏰 Castle', action: ()=>go('castle'), cls:'primary' }];
+    if (D.flags.defeated_elder_wyrm) return [{ text: '🏰 Castle', action: ()=>go('castle'), cls:'primary' }];
     return [
       { text: '🏰 Castle', action: ()=>go('castle'), cls:'primary' },
       { text: '🏪 Item Shop', action: ()=>go('shop') },
@@ -421,16 +421,16 @@ LOC.town_square = {
 LOC.castle = {
   name: 'Royal Castle',
   desc: () => {
-    if (D.flags.defeated_dragon) return 'The king weeps tears of joy: "Hero! You have saved our kingdom! From this day forward, you are Radatome\'s eternal guardian!"';
-    if (!D.flags.talked_king) return 'In the solemn throne room, the old king furrows his brow. He rises as you enter:\n\n"Young hero, you have come at last. The dragon nests in the northern cave. Take these 50 gold coins as provisions—please, slay the beast!"';
-    return 'The king asks with concern: "Hero, are you ready to face the dragon? Visit the shops and prepare yourself. The dragon is immensely powerful."';
+    if (D.flags.defeated_elder_wyrm) return 'The king weeps tears of joy: "Hero! You have saved our kingdom! From this day forward, you are Stonehollow\'s eternal guardian!"';
+    if (!D.flags.talked_king) return 'In the solemn throne room, the old king furrows his brow. He rises as you enter:\n\n"Young hero, you have come at last. The wyrm nests in the mountain peaks beyond the forest. Take these 60 gold coins as provisions—please, slay the beast!"';
+    return 'The king asks with concern: "Hero, are you ready to face the wyrm? Visit the shops and prepare yourself. The wyrm is immensely powerful."';
   },
   actions: () => {
-    if (D.flags.defeated_dragon) return [{ text: 'Return to Square', action: ()=>go('town_square') }];
+    if (D.flags.defeated_elder_wyrm) return [{ text: 'Return to Square', action: ()=>go('town_square') }];
     if (!D.flags.talked_king) return [
       { text: 'Accept the Quest', action: ()=>{
-        D.flags.talked_king=true; D.gold+=50;
-        addLog('Gained 50 Gold', 'gold');
+        D.flags.talked_king=true; D.gold+=60;
+        addLog('Gained 60 Gold', 'gold');
         if (!hasItem('herb')){addItem('herb');addLog('Also received a Herb','info');}
         renderLocation();
       }, cls:'primary' },
@@ -492,10 +492,10 @@ LOC.inn = {
     { text: 'Chat with Innkeeper', action: ()=>{
       const msgs = [
         '"I hear bandits have been spotted in the north forest. Be careful."',
-        '"The dragon in the cave has nested there for years. No hero has returned..."',
+        '"The wyrm in the mountain has nested there for years. No hero has returned..."',
         '"The priest at the church is a good man. He might bless you."',
         '"The blacksmith at the weapon shop was quite the adventurer in his youth."',
-        '"If you find a Strength Seed, eat it right away—those are rare!"',
+        '"If you find a Vigor Seed, eat it right away—those are rare!"',
       ];
       addLog(msgs[Math.floor(Math.random()*msgs.length)], 'dialog');
       renderLocation();
@@ -577,7 +577,7 @@ LOC.forest_deep = {
     const acts = []; D.flags.deep_forest_visited=true;
     acts.push({ text: 'Look around', action: ()=>{
       if (Math.random()<0.5) startCombat(Math.random()<0.5?'goblin':'bat');
-      else {if(!D.flags.found_str_seed && Math.random()<0.3){D.flags.found_str_seed=true;D.baseAtk+=2;addLog('💪 Found a Strength Seed! ATK permanently +2!','system');}else addLog('Found nothing.','info');renderLocation();}
+      else {if(!D.flags.found_vigor_seed && Math.random()<0.3){D.flags.found_vigor_seed=true;D.baseAtk+=2;addLog('💪 Found a Vigor Seed! ATK permanently +2!','system');}else addLog('Found nothing.','info');renderLocation();}
     }});
     acts.push({ text: 'Bandit Camp', action: ()=>go('bandit_camp') });
     acts.push({ text: 'Return to Forest Path', action: ()=>go('forest') });
@@ -613,7 +613,7 @@ LOC.north_forest = {
       else {
         if (!D.flags.found_power_ring && Math.random()<0.3) {
           D.flags.found_power_ring=true; addItem('power_ring');
-          addLog('💍 Found a Power Ring in a hollow tree! ATK+2','system');
+          addLog('💍 Found a Might Ring in a hollow tree! ATK+2','system');
         } else addLog('Found nothing.','info');
         renderLocation();
       }
@@ -628,7 +628,7 @@ LOC.ruined_ruins = {
   name: '🏚 Ruined Ruins',
   desc: () => {
     if (D.flags.killed_death_knight) return 'Silence fills the ancient ruins. Only the wind whistles through crumbling walls. The Death Knight is no more.';
-    return 'Stone ruins half-buried in vines. An altar in the center pulses with black energy. A knight in black armor stands before it, as if guarding something.';
+    return 'Stone ruins half-buried in vines. An altar in the center pulses with black energy. A knight in twilight armor stands before it, as if guarding something.';
   },
   actions: () => {
     if (D.flags.killed_death_knight) return [{ text: 'Return to North Forest', action: ()=>go('north_forest') }];
@@ -669,7 +669,7 @@ LOC.cave_b1 = {
       else {
         if (!D.flags.found_guard_ring && Math.random()<0.3) {
           D.flags.found_guard_ring=true; addItem('guard_ring');
-          addLog('💍 Found a Guard Ring at the lake bottom! DEF+2','system');
+          addLog('💍 Found a Ward Ring at the lake bottom! DEF+2','system');
         } else addLog('Found nothing.','info');
         renderLocation();
       }
@@ -681,10 +681,10 @@ LOC.cave_b1 = {
 };
 
 LOC.cave_b2 = {
-  name: '🕳 Ancient Ruins B2',
+  name: '🕳 Forgotten Ruins B2',
   desc: () => {
     if (!D.flags.cave_b2_visited) return 'The cave opens into a vast underground ruin! Broken pillars and rune-carved walls tell of an ancient history. Cold air hangs heavy; translucent shapes drift in the gloom.';
-    return 'Ancient ruins where runes glow faintly in the dark. Whispers of spirits echo through the halls.';
+    return 'Forgotten ruins where runes glow faintly in the dark. Whispers of spirits echo through the halls.';
   },
   actions: () => {
     const acts = []; D.flags.cave_b2_visited=true;
@@ -699,10 +699,10 @@ LOC.cave_b2 = {
 };
 
 LOC.cave_b3 = {
-  name: '🕳 Dark Corridor B3',
+  name: '🕳 Molten Corridor B3',
   desc: () => {
     if (!D.flags.cave_b3_visited) return 'Through a narrow crevice you enter a vast underground corridor. The air is hot and dry. Walls are studded with dimly glowing red ore. Heavy footsteps echo from the darkness.';
-    return 'The dark corridor pulses with red light. Unknown creatures shift in the shadows.';
+    return 'The molten corridor pulses with red light. Unknown creatures shift in the shadows.';
   },
   actions: () => {
     const acts = []; D.flags.cave_b3_visited=true;
@@ -710,74 +710,74 @@ LOC.cave_b3 = {
       if (Math.random()<0.5) startCombat(Math.random()<0.5?'dark_knight':'rock_golem');
       else {
         let found=false;
-        if (!D.flags.found_flame_sword && Math.random()<0.25) {
-          D.flags.found_flame_sword=true; addItem('flame_sword');
-          addLog('🔥 Found a Flame Sword on a stone altar! ATK+8','system'); found=true;
+        if (!D.flags.found_cinderbrand && Math.random()<0.25) {
+          D.flags.found_cinderbrand=true; addItem('cinderbrand');
+          addLog('🔥 Found Cinderbrand on a stone altar! ATK+8','system'); found=true;
         }
         if (!found && !D.flags.found_life_ring && Math.random()<0.25) {
           D.flags.found_life_ring=true; addItem('life_ring');
-          addLog('💍 Found a Life Ring on a skeleton\'s finger! HP+15','system'); found=true;
+          addLog('💍 Found a Vital Ring on a skeleton\'s finger! HP+15','system'); found=true;
         }
         if (!found) addLog('Found nothing.','info');
         renderLocation();
       }
     }});
     if (D.flags.cave_b3_visited) {
-      if (D.flags.killed_wyvern_king || D.level >= 4 || hasItem('dragon_killer'))
-        acts.push({ text: '🐉 Ascend to Dragon Peak', action: ()=>go('dragon_peak'), cls:'danger' });
+      if (D.flags.killed_storm_drake || D.level >= 4 || hasItem('wyrmbane'))
+        acts.push({ text: '🐉 Ascend to Dragonridge Peak', action: ()=>go('dragon_peak'), cls:'danger' });
       else
-        acts.push({ text: 'Try Dragon Peak', action: ()=>{addLog('A massive stone door blocks the way. You need more power to push it open. (Lv.4+ recommended)','info');renderLocation();} });
+        acts.push({ text: 'Try Dragonridge Peak', action: ()=>{addLog('A massive stone door blocks the way. You need more power to push it open. (Lv.4+ recommended)','info');renderLocation();} });
     }
     acts.push({ text: 'Return to B2', action: ()=>go('cave_b2') });
     return acts;
   },
 };
 
-// ---- Dragon area ----
+// ---- Mountain area ----
 LOC.dragon_peak = {
-  name: '⛰ Dragon Peak',
+  name: '⛰ Dragonridge Peak',
   desc: () => {
-    if (!D.flags.dragon_peak_visited) return 'You emerge from the cave onto a mountain peak. The biting wind whips around you. A sea of clouds churns below. On a distant summit looms a dark shape—the dragon\'s lair.\n\nA few wyverns perch on the plateau.';
-    return 'Dragon Peak, above the clouds. The dragon\'s lair lies ahead.';
+    if (!D.flags.dragon_peak_visited) return 'You emerge from the cave onto a mountain peak. The biting wind whips around you. A sea of clouds churns below. On a distant summit looms a dark shape—the wyrm\'s nest.\n\nA few drakes perch on the plateau.';
+    return 'Dragonridge Peak, above the clouds. The wyrm\'s nest lies ahead.';
   },
   actions: () => {
     const acts = []; D.flags.dragon_peak_visited=true;
-    acts.push({ text: 'Fight wyverns', action: ()=>{
+    acts.push({ text: 'Fight drakes', action: ()=>{
       if (Math.random()<0.6) startCombat('wyvern');
-      else {addLog('The wyverns circle overhead, ignoring you.','info');renderLocation();}
+      else {addLog('The drakes circle overhead, ignoring you.','info');renderLocation();}
     }});
-    if (D.flags.dragon_peak_visited) acts.push({ text: 'Wyvern King Peak', action: ()=>go('wyvern_peak') });
+    if (D.flags.dragon_peak_visited) acts.push({ text: 'Storm Peak', action: ()=>go('storm_peak') });
     acts.push({ text: 'Return to B3', action: ()=>go('cave_b3') });
     return acts;
   },
 };
 
-LOC.wyvern_peak = {
-  name: '⛰ Wyvern King Peak',
+LOC.storm_peak = {
+  name: '⛰ Storm Peak',
   desc: () => {
-    if (D.flags.killed_wyvern_king) return 'The Wyvern King\'s massive corpse lies still among the rocks. The path to the dragon\'s lair is open.';
-    return 'At the highest point of the peak, a wyvern three times the size of its kind stands at the cliff\'s edge, overlooking the sea of clouds. It senses your presence and slowly turns its head.';
+    if (D.flags.killed_storm_drake) return 'The Storm Drake\'s massive corpse lies still among the rocks. The path to the wyrm\'s nest is open.';
+    return 'At the highest point of the peak, a drake crowned with lightning-scarred horns stands at the cliff\'s edge, overlooking the sea of clouds. It senses your presence and slowly turns its head.';
   },
   actions: () => {
-    if (D.flags.killed_wyvern_king) return [{ text: '🐉 Enter Dragon\'s Lair!', action: ()=>go('dragon_lair'), cls:'danger' }];
+    if (D.flags.killed_storm_drake) return [{ text: '🐉 Enter Wyrm\'s Nest!', action: ()=>go('dragon_lair'), cls:'danger' }];
     return [
-      { text: '⚔ Fight the Wyvern King!', action: ()=>startCombat('wyvern_king'), cls:'danger' },
-      { text: 'Return to Dragon Peak', action: ()=>go('dragon_peak') },
+      { text: '⚔ Fight the Storm Drake!', action: ()=>startCombat('storm_drake'), cls:'danger' },
+      { text: 'Return to Dragonridge Peak', action: ()=>go('dragon_peak') },
     ];
   },
 };
 
 LOC.dragon_lair = {
-  name: '🐉 Dragon\'s Lair',
+  name: '🐉 Wyrm\'s Nest',
   desc: () => {
-    if (D.flags.defeated_dragon) return 'The lair holds only cold ash and broken scales. The dragon has been vanquished.';
-    return '🔥 The vast cavern is piled with gold and bones. Deep within, the Ancient Dragon opens its molten-lava eyes. It rises slowly, and the very ground trembles.\n\n「ROOOOOAR────！！！！」\n\nThe final battle!';
+    if (D.flags.defeated_elder_wyrm) return 'The nest holds only cold ash and broken scales. The wyrm has been vanquished.';
+    return '🔥 The vast cavern is piled with gold and bones. Deep within, the Elder Wyrm opens its molten-lava eyes. It rises slowly, and the very ground trembles.\n\n「ROOOOOAR────！！！！」\n\nThe final battle!';
   },
   actions: () => {
-    if (D.flags.defeated_dragon) return [{ text: 'Return to Town', action: ()=>go('town_square') }];
+    if (D.flags.defeated_elder_wyrm) return [{ text: 'Return to Town', action: ()=>go('town_square') }];
     return [
-      { text: '⚔ Challenge the Ancient Dragon!', action: ()=>startCombat('ancient_dragon'), cls:'danger' },
-      { text: 'Return to Dragon Peak', action: ()=>go('dragon_peak') },
+      { text: '⚔ Challenge the Elder Wyrm!', action: ()=>startCombat('elder_wyrm'), cls:'danger' },
+      { text: 'Return to Dragonridge Peak', action: ()=>go('dragon_peak') },
     ];
   },
 };
@@ -792,13 +792,13 @@ function saveGame() {
   try {
     const data = {};
     ['hp','maxHp','baseAtk','baseDef','level','exp','gold','weapon','armor','accessory','inventory','flags','poisoned','cursed','blessing'].forEach(k => data[k] = JSON.parse(JSON.stringify(D[k])));
-    localStorage.setItem('dq_save_en', JSON.stringify(data));
+    localStorage.setItem('emberfel_save_en', JSON.stringify(data));
   } catch(e) {}
 }
 
 function loadGame() {
   try {
-    const raw = localStorage.getItem('dq_save_en');
+    const raw = localStorage.getItem('emberfel_save_en');
     if (!raw) return false;
     const data = JSON.parse(raw);
     Object.assign(D, data);
@@ -865,17 +865,17 @@ function addEquipActions() {
   if (hasItem('iron_sword') && D.weapon!=='iron_sword' && D.weapon!=='steel_sword') {
     const b=document.createElement('button');b.textContent='⚔ Equip Iron Sword';b.className='primary';b.onclick=()=>{D.weapon='iron_sword';removeItem('iron_sword');addLog(`Equipped Iron Sword! ATK+${WEAPONS.iron_sword.atk}`,'system');renderLocation();};el.appendChild(b);
   }
-  if (hasItem('flame_sword') && D.weapon!=='flame_sword') {
-    const b=document.createElement('button');b.textContent='🔥 Equip Flame Sword';b.className='primary';b.onclick=()=>{D.weapon='flame_sword';removeItem('flame_sword');addLog(`Equipped Flame Sword! ATK+${WEAPONS.flame_sword.atk}`,'system');renderLocation();};el.appendChild(b);
+  if (hasItem('cinderbrand') && D.weapon!=='cinderbrand') {
+    const b=document.createElement('button');b.textContent='🔥 Equip Cinderbrand';b.className='primary';b.onclick=()=>{D.weapon='cinderbrand';removeItem('cinderbrand');addLog(`Equipped Cinderbrand! ATK+${WEAPONS.cinderbrand.atk}`,'system');renderLocation();};el.appendChild(b);
   }
-  if (hasItem('dragon_killer') && D.weapon!=='dragon_killer') {
-    const b=document.createElement('button');b.textContent='🐉 Equip Dragon Killer';b.className='danger';b.onclick=()=>{D.weapon='dragon_killer';removeItem('dragon_killer');addLog(`Equipped Dragon Killer! ATK+${WEAPONS.dragon_killer.atk}`,'system');renderLocation();};el.appendChild(b);
+  if (hasItem('wyrmbane') && D.weapon!=='wyrmbane') {
+    const b=document.createElement('button');b.textContent='🐉 Equip Wyrmbane';b.className='danger';b.onclick=()=>{D.weapon='wyrmbane';removeItem('wyrmbane');addLog(`Equipped Wyrmbane! ATK+${WEAPONS.wyrmbane.atk}`,'system');renderLocation();};el.appendChild(b);
   }
   if (hasItem('platinum_armor') && D.armor!=='platinum_armor') {
     const b=document.createElement('button');b.textContent='🛡 Equip Plat Armor';b.className='primary';b.onclick=()=>{D.armor='platinum_armor';removeItem('platinum_armor');addLog(`Equipped Platinum Armor! DEF+${ARMORS.platinum_armor.def}`,'system');renderLocation();};el.appendChild(b);
   }
-  if (hasItem('dragon_armor') && D.armor!=='dragon_armor') {
-    const b=document.createElement('button');b.textContent='🛡 Equip Dragon Mail';b.className='primary';b.onclick=()=>{D.armor='dragon_armor';removeItem('dragon_armor');addLog(`Equipped Dragon Mail! DEF+${ARMORS.dragon_armor.def}`,'system');renderLocation();};el.appendChild(b);
+  if (hasItem('scaleplate') && D.armor!=='scaleplate') {
+    const b=document.createElement('button');b.textContent='🛡 Equip Scaleplate';b.className='primary';b.onclick=()=>{D.armor='scaleplate';removeItem('scaleplate');addLog(`Equipped Scaleplate! DEF+${ARMORS.scaleplate.def}`,'system');renderLocation();};el.appendChild(b);
   }
   ['power_ring','guard_ring','life_ring'].forEach(id => {
     if (hasItem(id) && D.accessory !== id) {
@@ -904,11 +904,11 @@ function renderCombat() {
     { text:'🛡 Guard', action:()=>combatAction('defend') },
   ];
   if (hasItem('herb')) acts.push({ text:`🌿 Herb(${itemCount('herb')})`, action:()=>combatAction('item_herb'), cls:'heal' });
-  if (hasItem('super_herb')) acts.push({ text:`🌿 Super(${itemCount('super_herb')})`, action:()=>combatAction('item_super_herb'), cls:'heal' });
+  if (hasItem('super_herb')) acts.push({ text:`🌿 Heal.H(${itemCount('super_herb')})`, action:()=>combatAction('item_super_herb'), cls:'heal' });
   if (hasItem('antidote')) acts.push({ text:`💊 Antidote(${itemCount('antidote')})`, action:()=>combatAction('item_antidote') });
-  if (hasItem('holy_water')) acts.push({ text:`💧 Holy Wtr(${itemCount('holy_water')})`, action:()=>combatAction('item_holy_water'), cls:'purple' });
-  if (hasItem('bomb')) acts.push({ text:`💥 Bomb(${itemCount('bomb')})`, action:()=>combatAction('item_bomb'), cls:'gold' });
-  if (hasItem('prayer_candle')) acts.push({ text:`🕯 Candle(${itemCount('prayer_candle')})`, action:()=>combatAction('item_prayer_candle') });
+  if (hasItem('holy_water')) acts.push({ text:`💧 Blessed(${itemCount('holy_water')})`, action:()=>combatAction('item_holy_water'), cls:'purple' });
+  if (hasItem('bomb')) acts.push({ text:`💥 Blast(${itemCount('bomb')})`, action:()=>combatAction('item_bomb'), cls:'gold' });
+  if (hasItem('prayer_candle')) acts.push({ text:`🕯 Smoke(${itemCount('prayer_candle')})`, action:()=>combatAction('item_prayer_candle') });
   acts.push({ text:'🏃 Flee', action:()=>combatAction('flee') });
   acts.forEach(a => {
     const btn = document.createElement('button');
